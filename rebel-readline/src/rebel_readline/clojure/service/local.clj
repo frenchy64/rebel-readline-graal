@@ -5,7 +5,7 @@
    [rebel-readline.tools :as tools]
    [rebel-readline.utils :as utils]
    ;; lazy-load
-   #_[compliment.core :as compliment]
+   [compliment.core :as compliment]
    [clojure.repl]))
 
 ;; taken from replicant
@@ -69,7 +69,7 @@
 
 (defmethod clj-reader/-complete ::service [_ word options]
   ;; lazy-load for faster startup
-  (when-let [completions (utils/require-resolve-var 'compliment.core/completions)]
+  (when-let [completions compliment.core/completions #_(utils/require-resolve-var 'compliment.core/completions)]
     (if options
       (completions word options)
       (completions word))))
@@ -87,7 +87,7 @@
 (defmethod clj-reader/-doc ::service [self var-str]
   (when-let [{:keys [ns name]} (clj-reader/-resolve-meta self var-str)]
     ;; lazy-load for faster startup
-    (when-let [documentation (utils/require-resolve-var 'compliment.core/documentation)]
+    (when-let [documentation compliment.core/documentation #_(utils/require-resolve-var 'compliment.core/documentation)]
       (when-let [doc (documentation var-str)]
         (let [url (clj-utils/url-for (str ns) (str name))]
           (cond-> {:doc doc}
