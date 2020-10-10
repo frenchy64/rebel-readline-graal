@@ -10,7 +10,7 @@
 
 ;; this is a regexp based tokenizer for clojure that meets these needs well enough
 
-(defn tag-matches [x regexp & group-styles]
+(defn tag-matches [x ^Pattern regexp & group-styles]
   (let [m (.matcher regexp x)]
     (apply
      concat
@@ -25,10 +25,10 @@
               (keep-indexed
                (fn [i style]
                  (when style
-                   (when-let [g (.group m (inc i))]
+                   (when-let [g (.group m ^int (inc i))]
                      [g
-                      (.start m (inc i))
-                      (.end m (inc i))
+                      (.start m ^int (inc i))
+                      (.end m ^int (inc i))
                       style])))
                group-styles))))
         nil))))))
@@ -48,7 +48,7 @@
        (map name)))
 
 (defn core-macros []
-  (filter #(not (.startsWith % "def")) ;; defs are handled elsewhere, leave for redundancy?
+  (filter #(not (string/starts-with? % "def")) ;; defs are handled elsewhere, leave for redundancy?
             (filter-core-var-meta :macro)))
 
 (defn core-fns []
@@ -58,7 +58,7 @@
 (defn core-vars []
   (filter-core-var-meta #(and (not (:arglists %))
                               (not (:macro %))
-                              (.startsWith (-> % :name name) "*"))))
+                              (string/starts-with? (-> % :name name) "*"))))
 
 (def special-forms (map name '[#_def if do quote var recur throw try catch
                                monitor-enter monitor-exit new set!]))

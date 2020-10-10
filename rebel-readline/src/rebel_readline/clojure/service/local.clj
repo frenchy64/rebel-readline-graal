@@ -15,8 +15,8 @@
   (let [out-writer (java.io.StringWriter.)
         err-writer (java.io.StringWriter.)
         capture-streams (fn []
-                          (.flush *out*)
-                          (.flush *err*)
+                          (.flush ^java.io.Writer *out*)
+                          (.flush ^java.io.Writer *err*)
                           {:out (.toString out-writer)
                            :err (.toString err-writer)})]
     (binding [*out* (java.io.BufferedWriter. out-writer)

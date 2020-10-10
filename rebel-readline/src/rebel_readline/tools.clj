@@ -6,7 +6,8 @@
    [clojure.edn :as edn])
   (:import
    [org.jline.utils AttributedStringBuilder AttributedStyle]
-   [org.jline.keymap KeyMap]))
+   [org.jline.keymap KeyMap]
+   [java.io File]))
 
 ;; ----------------------------------------------
 ;; Extra Abilities
@@ -22,10 +23,10 @@
   (assert (map? color-map))
   (alter-var-root #'color-themes assoc ky color-map))
 
-(defn fg-color [color]
+(defn ^AttributedStyle fg-color [color]
   (.foreground AttributedStyle/DEFAULT color))
 
-(defn color [sk]
+(defn ^AttributedStyle color [sk]
   (->
    (get @api/*line-reader* :color-theme)
    color-themes
@@ -34,7 +35,7 @@
 ;; String Highlighting
 ;; ----------------------------------------------
 
-(defn highlight-tokens [color-fn tokens syntax-str]
+(defn ^AttributedStringBuilder highlight-tokens [color-fn tokens syntax-str]
   (let [sb (AttributedStringBuilder.)]
     (loop [pos 0
            hd tokens]
@@ -43,7 +44,7 @@
           (= (.length sb) (count syntax-str)) sb
           (= (-> hd first second) pos) ;; style active
           (do
-            (if-let [st (color-fn sk)]
+            (if-let [st ^AttributedStyle (color-fn sk)]
               (.styled sb st (subs syntax-str start end))
               (.append sb (subs syntax-str start end)))
             (recur end (rest hd)))
@@ -51,7 +52,7 @@
           ;; instead of advancing one char at a time
           ;; but its pretty fast now
           :else
-          (do (.append sb (.charAt syntax-str pos))
+          (do (.append sb (.charAt ^String syntax-str pos))
               (recur (inc pos) hd)))))))
 
 (defn highlight-str [color-fn tokenizer-fn syntax-str]
@@ -70,7 +71,7 @@
                  ".clojure")]
        (keep identity)
        (map #(io/file % "rebel_readline.edn"))
-       (filter #(.exists %))
+       (filter #(.exists ^File %))
        first))
 
 (defn translate-serialized-key-bindings [key-binding-map]

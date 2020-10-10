@@ -10,7 +10,8 @@
   (:import
    [org.jline.reader
     UserInterruptException
-    EndOfFileException]))
+    EndOfFileException]
+   [java.io PushbackReader]))
 
 (defmacro ensure-terminal
   "Bind the rebel-readline.jline-api/*terminal* var to a new Jline
@@ -186,7 +187,7 @@
 (defn has-remaining?
   "Takes a PushbackReader and returns true if the next character is not negative.
    i.e not the end of the readers stream."
-  [pbr]
+  [^PushbackReader pbr]
   (let [x (.read pbr)]
     (and (not (neg? x))
          (do (.unread pbr x) true))))
