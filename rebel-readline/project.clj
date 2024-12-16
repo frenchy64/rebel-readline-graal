@@ -16,7 +16,9 @@
                  [dev.weavejester/cljfmt "0.13.0"]
                  [compliment/compliment "0.6.0"]]
 
-  :aot [rebel-readline.line-reader-class]
+  :aot [rebel-readline.line-reader-class
+        rebel-readline.main]
+  :main rebel-readline.main
 
   :profiles {:dev {:source-paths ["src" "dev"]
                    :main rebel-dev.main}})

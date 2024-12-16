@@ -261,7 +261,7 @@ If you are using `lein` you may need to use `lein trampoline`."
   (locking (.writer (.getTerminal *line-reader*))
     (.redisplay *line-reader*)))
 
-(defn block-redisplay-millis [time-ms]
+(defn block-redisplay-millis [^long time-ms]
   (let [writer (.writer (.getTerminal *line-reader*))]
     (.start
      (Thread.
