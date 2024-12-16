@@ -2,7 +2,8 @@
   (:require
    [clojure.string :as string]
    [rebel-readline.jline-api.attributed-string :as astring]
-   [rebel-readline.utils :refer [log]])
+   [rebel-readline.utils :refer [log]]
+   rebel-readline.line-reader-class)
   (:import
    [org.jline.keymap KeyMap]
    [org.jline.reader
