@@ -8,7 +8,7 @@
 (defn position-in-range? [s pos]
   (<= 0 pos (dec (count s))))
 
-(defn blank-at-position? [s pos]
+(defn blank-at-position? [^String s pos]
   (or (not (position-in-range? s pos))
       (Character/isWhitespace (.charAt s pos))))
 
@@ -16,7 +16,7 @@
   (map rest
        (tokenize/tag-non-interp code-str)))
 
-(defn in-non-interp-bounds? [code-str pos] ;; position of insertion not before
+(defn in-non-interp-bounds? [^String code-str pos] ;; position of insertion not before
   (or (some #(and (< (first %) pos (second %)) %)
             (non-interp-bounds code-str))
       (and (<= 0 pos (dec (count code-str)))
@@ -171,14 +171,14 @@
 (defn whitespace? [c]
   (re-matches #"[\s,]+" (str c)))
 
-(defn scan-back-from [pred s pos]
+(defn scan-back-from [pred ^String s pos]
   (first (filter #(pred (.charAt s %))
                  (range (min (dec (count s)) pos) -1 -1))))
 
 (defn first-non-whitespace-char-backwards-from [s pos]
   (scan-back-from (complement whitespace?) s pos))
 
-(defn sexp-ending-at-position [s pos]
+(defn sexp-ending-at-position [^String s pos]
   (let [c (try (.charAt s pos) (catch Exception e nil))]
     (when (#{ \" \) \} \] } c)
       (let [sexp-tokens (tokenize/tag-sexp-traversal s)]

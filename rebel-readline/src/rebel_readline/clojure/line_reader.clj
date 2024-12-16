@@ -8,7 +8,7 @@
    [rebel-readline.tools :as tools :refer [color service-dispatch]]
    [rebel-readline.utils :as utils :refer [log]]
    ;; lazy-load
-   #_[cljfmt.core :refer [reformat-string]]
+   [cljfmt.core :refer [reformat-string]]
    [clojure.string :as string]
    [clojure.java.io :as io]
    [clojure.main])
@@ -442,7 +442,7 @@
     0
     (if-let [prx (indent-proxy-str s cursor)]
       ;; lazy-load for faster start up
-      (let [reformat-string (utils/require-resolve-var 'cljfmt.core/reformat-string)]
+      (let [reformat-string cljfmt.core/reformat-string #_(utils/require-resolve-var 'cljfmt.core/reformat-string)]
         (try (->>
               (reformat-string prx {:remove-trailing-whitespace? false
                                     :insert-missing-whitespace? false
@@ -497,7 +497,7 @@
 ;; ------------------------------------------------
 
 (defn one-space-after-funcall-word? []
-  (let [s (buffer-as-string)
+  (let [s ^String (buffer-as-string)
         curs (cursor)
         tagged-parses (tokenize/tag-sexp-traversal s)
         [_ start _ _] (sexp/find-open-sexp-start tagged-parses curs)]
@@ -596,7 +596,7 @@
 
 (defn format-pair-to-width [wrd width [ns' name']]
   (let [sep (apply str (repeat (- width (count ns') (count name')) \space))
-        idx (.indexOf name' wrd)]
+        idx (string/index-of name' wrd)]
     (astring/astr
      [(subs name' 0 idx)                   (color :widget/apropos-word)]
      [(subs name' idx (+ idx (count wrd))) (color :widget/apropos-highlight)]
@@ -716,7 +716,7 @@
       (str (subs s 0 max-char) "...")
       s)))
 
-(defn ensure-newline [s]
+(defn ^String ensure-newline [s]
   (str (string/trim-newline s) "\n"))
 
 (defn no-greater-than [limit val]
@@ -741,8 +741,10 @@
       (not (string/blank? err)) (.styled (color :widget/error) (ensure-newline err))
       (and (not exception) printed-result)
       (.append
+       ^AttributedString
        (inline-result-marker
         (.toAttributedString
+         ^AttributedStringBuilder
          (highlight-clj-str printed-result)))))))
 
 (def eval-at-point-widget
@@ -831,7 +833,7 @@
     bind-clojure-widgets
     bind-clojure-widgets-vi-cmd))
 
-(defn add-widgets-and-bindings [line-reader]
+(defn add-widgets-and-bindings [^LineReader line-reader]
   (binding [*line-reader* line-reader]
     (clojure-emacs-mode :emacs)
     (clojure-vi-insert-mode :viins)
@@ -868,7 +870,7 @@
                        (fn [[_ s e]]
                          (<= s cursor e))
                        words))
-        word-index (.indexOf (vec words) word)
+        word-index (.indexOf ^clojure.lang.APersistentVector (vec words) word)
         word-cursor (if-not word
                       0
                       (- cursor (second word)))]
@@ -895,7 +897,7 @@
 
 ;; this is an indent call that is specific to ACCEPT_LINE based actions
 ;; the functionality implemented here is indenting when you hit return on a line
-(defn indent [line-reader line cursor]
+(defn indent [^LineReader line-reader line cursor]
   ;; you could work on the buffer here instead
 
   ;; TODO this key binding needs to be looked up from the macro if possible
@@ -922,7 +924,8 @@
               (throw (EOFError. -1 -1 "Unbalanced Expression" (str *ns*))))
             (= context Parser$ParseContext/COMPLETE)
             (parsed-line (parse-line line cursor))
-            :else (proxy-super parse line cursor context))))
+            :else (let [^DefaultParser this this]
+                    (proxy-super parse line cursor context)))))
     (.setQuoteChars (char-array [\"]))))
 
 ;; ----------------------------------------
@@ -941,7 +944,7 @@
 
 ;; TODO this has string hacks in it that wouldn't be needed
 ;; with better sexp parsing
-(defn replace-word-with-prefix [parsed-line]
+(defn replace-word-with-prefix [^ParsedLine parsed-line]
   (let [[start end] (parsed-line-word-coords parsed-line)
         [_ _ _ typ] (:word-token (meta parsed-line))
         line (.line parsed-line)]
@@ -975,13 +978,13 @@
 
 (defn command-token? [{:keys [line tokens word]} starts-with]
   (and (= 1 (count tokens))
-       (.startsWith (string/triml line) starts-with)
-       (.startsWith word starts-with)))
+       (string/starts-with? (string/triml line) starts-with)
+       (string/starts-with? word starts-with)))
 
 (defn find-completions [candidates prefix]
   (->> candidates
        (map str)
-       (filter #(.startsWith % prefix))
+       (filter #(string/starts-with? % prefix))
        (sort-by (juxt count identity))
        (map #(hash-map :candidate % :type :repl-command))
        not-empty))
@@ -1029,7 +1032,7 @@
       ;; so add this binding here
       (binding [*line-reader* reader]
         (if (:highlight @reader)
-          (.toAttributedString (highlight-clj-str buffer))
+          (.toAttributedString ^AttributedStringBuilder (highlight-clj-str buffer))
           (AttributedString. buffer))))))
 
 ;; ----------------------------------------
@@ -1039,7 +1042,7 @@
 (defn create* [terminal service & [{:keys [completer highlighter parser]}]]
   {:pre [(instance? org.jline.terminal.Terminal terminal)
          (map? service)]}
-  (doto (create-line-reader terminal "Clojure Readline" service)
+  (doto ^LineReaderImpl (create-line-reader terminal "Clojure Readline" service)
     (.setCompleter (or completer (clojure-completer)))
     (.setHighlighter (or highlighter (clojure-highlighter )))
     (.setParser (or parser (make-parser)))

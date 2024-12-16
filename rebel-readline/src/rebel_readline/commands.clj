@@ -101,7 +101,7 @@ Without any arguments displays all the current key bindings")
    km))
 
 (defn classify-keybindings [km]
-  (let [res (group-by (fn [[k v]]
+  (let [res (group-by (fn [[k ^String v]]
                         (and (string? v)
                              (.startsWith v "clojure-"))) km)]
     (-> res
@@ -113,7 +113,7 @@ Without any arguments displays all the current key bindings")
   (let [km (get (.getKeyMaps api/*line-reader*) "main")
         key-data (filter
                   (if search
-                    (fn [[k v]]
+                    (fn [[^String k ^String v]]
                       (or (.contains k (name search))
                           (.contains v (name search))))
                     identity)
@@ -195,7 +195,7 @@ Without any arguments displays all the current key bindings")
 
 (defn all-commands []
   (filter #(= (namespace %) "repl")
-   (keys (.getMethodTable command))))
+   (keys (.getMethodTable ^clojure.lang.MultiFn command))))
 
 (defmethod command-doc :repl/help [_]
   "Prints the documentation for all available commands.")
