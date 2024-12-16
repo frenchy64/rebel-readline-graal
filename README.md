@@ -1,9 +1,14 @@
-# rebel-readline
+# rebel-readline-graal
 
-[![Clojars Project](https://img.shields.io/clojars/v/com.bhauman/rebel-readline.svg)](https://clojars.org/com.bhauman/rebel-readline)
-[![Clojars Project](https://img.shields.io/clojars/v/com.bhauman/rebel-readline-cljs.svg)](https://clojars.org/com.bhauman/rebel-readline-cljs)
+[![Clojars Project](https://img.shields.io/clojars/v/com.ambrosebs/rebel-readline.svg)](https://clojars.org/com.ambrosebs/rebel-readline)
 
-A terminal readline library for Clojure Dialects
+A terminal readline library for Clojure Dialects.
+
+This fork is designed to run on graalvm.
+
+History:
+- merge https://github.com/dundalek/rebel-readline/tree/graal
+- update dependencies
 
 [![asciicast](https://asciinema.org/a/160597.png)](https://asciinema.org/a/160597)
 
