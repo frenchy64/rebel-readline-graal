@@ -78,33 +78,33 @@
       ~@body)))
 
 (defn help-message
-  "Returns a help message to print before enguaging the
+  "Returns a help message to print before engaging the
   readline. Helpful for repl development."
   []
   "[Rebel readline] Type :repl/help for online help info")
 
 (defn read-line-opts
   "Like read-line, but allows overriding of the LineReader prompt, buffer, and mask parameters.
-   
-   :prompt 
-     Allows overriding with a cusom prompt
+
+   :prompt
+     Allows overriding with a custom prompt
    :buffer
      The default value presented to the user to edit, may be null.
-   :mask 
-     Should be set to a single character used by jline to bit-mask.  
+   :mask
+     Should be set to a single character used by jline to bit-mask.
      Characters will not be echoed if they mask to 0
      Might do crazy stuff with rebel-readline, use with caution.
      defaults to nil (no mask)
    :command-executed
-     sentinal value to be returned when a repl command is executed, otherwise a 
+     sentinel value to be returned when a repl command is executed, otherwise a
      blank string will be returned when a repl command is executed.
   "
   [ & {prompt :prompt
        mask :mask
-       buffer :buffer 
+       buffer :buffer
        command-executed :command-executed
        :or {prompt nil buffer nil mask nil command-executed ""}}]
-  
+
   (let [redirect-output? (:redirect-output @api/*line-reader*)
         save-out (volatile! *out*)
         redirect-print-writer (api/safe-terminal-writer api/*line-reader*)]
@@ -116,7 +116,7 @@
          redirect-print-writer)))
     (try
       (binding [*out* redirect-print-writer]
-        ;; this is intensely disatisfying
+        ;; this is intensely dissatisfying
         ;; but we are blocking concurrent redisplays while the
         ;; readline prompt is initially drawn
         (api/block-redisplay-millis 100)
@@ -132,7 +132,7 @@
 (defn read-line
   "Reads a line from the currently bound
   rebel-readline.jline-api/*line-reader*. If you supply the optional
-  `command-executed` sentinal value, it will be returned when a repl
+  `command-executed` sentinel value, it will be returned when a repl
   command is executed, otherwise a blank string will be returned when
   a repl command is executed.
 
@@ -158,24 +158,24 @@
   ;; readline, while ensuring that the printed output has a newline at
   ;; the end.
 
-  ;; We then expand the scope of this print-writer by temorarily
+  ;; We then expand the scope of this print-writer by temporarily
   ;; redefining the root binding of *out* to it.
 
-  ;; The idea being that we want to catch as much concurrant output as
-  ;; possible while the readline is enguaged.
+  ;; The idea being that we want to catch as much concurrent output as
+  ;; possible while the readline is engaged.
   [& [command-executed]]
   (read-line-opts :command-executed (or command-executed "")))
 
 (defn repl-read-line
   "A readline function that converts the Exceptions normally thrown by
   org.jline.reader.impl.LineReaderImpl that signal user interrupt or
-  the end of the parent stream into concrete sentinal objects that one
+  the end of the parent stream into concrete sentinel objects that one
   can act on.
 
   This follows the pattern established by `clojure.main/repl-read`
 
   This function either returns the string read by this readline or the
-  request-exit or request-prompt sentinal objects."
+  request-exit or request-prompt sentinel objects."
   [request-prompt request-exit]
   (try
     (read-line request-prompt)
@@ -234,7 +234,7 @@
       :else (str possible-result "\n"))))
 
 (defmacro with-readline-in
-  "This macro takes a rebel readline service and binds *in* to an a
+  "This macro takes a rebel readline service and binds *in* to a
   `clojure.lang.LineNumberingPushbackReader` that is backed by the
   readline.
 
