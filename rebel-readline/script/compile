@@ -17,7 +17,7 @@ if [ -z "$NATIVE_IMAGE" ]; then
   fi
 fi
 
-jar=${1:-target/rebel-readline-0.1.5-SNAPSHOT-standalone.jar}
+jar=${1:-target/rebel-readline-standalone.jar}
 
 "$NATIVE_IMAGE" \
   -jar "$jar" \
@@ -27,13 +27,13 @@ jar=${1:-target/rebel-readline-0.1.5-SNAPSHOT-standalone.jar}
   -J-Dclojure.compiler.direct-linking=true \
   -J-Dorg.jline.terminal.disableDeprecatedProviderWarning=true \
   -H:IncludeResources='org/jline/utils/.*' \
-  --initialize-at-build-time \
   -H:Log=registerResource: \
   -H:EnableURLProtocols=http,https \
   --enable-all-security-services \
   --verbose \
   --no-fallback \
-  --no-server \
-  --report-unsupported-elements-at-runtime \
+  --initialize-at-build-time=org.jline.utils.AttributedStyle \
+  --features=clj_easy.graal_build_time.InitClojureClasses \
   -H:+PrintClassInitialization \
+  -O0 \
   -J-Xmx6g

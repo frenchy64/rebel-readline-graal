@@ -18,5 +18,7 @@
   :aot [rebel-readline.line-reader-class]
   :profiles {:dev {:source-paths ["src" "dev"]
                    :main rebel-dev.main}
-             :uberjar {:aot [rebel-readline.main]
+             :uberjar {:dependencies [[com.github.clj-easy/graal-build-time "1.0.5"]]
+                       :aot :all
+                       :uberjar-name "rebel-readline-standalone.jar"
                        :main rebel-readline.main}})
