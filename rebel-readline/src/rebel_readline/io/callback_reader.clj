@@ -3,8 +3,8 @@
    [java.nio CharBuffer]))
 
 (defn fill-buffer [closed-atom buf-atom read-callback]
-  (when (and (not @closed-atom) (not (.hasRemaining @buf-atom)))
-    (if-let [res (read-callback)]
+  (when (and (not @closed-atom) (not (.hasRemaining ^CharBuffer @buf-atom)))
+    (if-let [res ^chars (read-callback)]
       (reset! buf-atom (CharBuffer/wrap res))
       (vreset! closed-atom true))))
 
@@ -17,23 +17,23 @@
            (fill-buffer closed buf read-callback)
            (if @closed
              -1
-             (let [c (.get @buf)]
+             (let [c (.get ^CharBuffer @buf)]
                (if (integer? c) c (int c)))))
           ([^chars out-array]
            (fill-buffer closed buf read-callback)
            (if @closed
              -1
-             (let [buflen (.length @buf)
+             (let [buflen (.length ^CharBuffer @buf)
                    len (min (alength out-array) buflen)]
-               (.get @buf out-array 0 len)
+               (.get ^CharBuffer @buf out-array 0 len)
                len)))
           ([^chars out-array off maxlen]
            (fill-buffer closed buf read-callback)
            (if @closed
              -1
-             (let [buflen (.length @buf)
+             (let [buflen (.length ^CharBuffer @buf)
                    len (min buflen maxlen)]
-               (.get @buf out-array off len)
+               (.get ^CharBuffer @buf out-array off len)
                len))))
         (close []
           (vreset! closed true)))))

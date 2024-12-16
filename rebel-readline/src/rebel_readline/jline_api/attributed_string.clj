@@ -3,13 +3,13 @@
   (:import
    [org.jline.utils AttributedStringBuilder AttributedString AttributedStyle]))
 
-(defn astr
+(defn ^AttributedString astr
   [& args]
   (AttributedString.
    (reduce #(if %2
               (if (vector? %2)
-                (.styled %1 (second %2) (first %2))
-                (.append %1 %2))
+                (.styled ^AttributedStringBuilder %1 ^AttributedStyle (second %2) ^String (first %2))
+                (.append ^AttributedStringBuilder %1 ^AttributedString %2))
               %1)
            (AttributedStringBuilder.) args)))
 
@@ -29,7 +29,7 @@
   (mapv first
         (take-while some?
                     (rest
-                     (iterate (fn [[_ at-str]]
+                     (iterate (fn [[_ ^String at-str]]
                                 (when at-str
                                   (if (<= (count at-str) length)
                                     [at-str nil]
@@ -43,8 +43,8 @@
 (defn join [sep coll]
   (apply astr (interpose sep coll)))
 
-(defn ->ansi [at-str terminal]
+(defn ->ansi [^AttributedString at-str terminal]
   (.toAnsi (.toAttributedString at-str) terminal))
 
-(defn ->ansi-256 [at-str]
+(defn ->ansi-256 [^AttributedString at-str]
   (.toAnsi (.toAttributedString at-str) 256 true))
