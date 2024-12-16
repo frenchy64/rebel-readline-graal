@@ -5,5 +5,5 @@
         org.jline/jline-terminal-jansi {:mvn/version "3.24.1"}
         cljfmt/cljfmt {:mvn/version "0.13.0"}
         compliment/compliment {:mvn/version "0.6.0"}}
- ;;TODO prep step to compile rebel-readline.line-reader-class
+ ;;TODO prep step to compile java
  }

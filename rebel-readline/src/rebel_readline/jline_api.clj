@@ -2,8 +2,7 @@
   (:require
    [clojure.string :as string]
    [rebel-readline.jline-api.attributed-string :as astring]
-   [rebel-readline.utils :refer [log]]
-   rebel-readline.line-reader-class)
+   [rebel-readline.utils :refer [log]])
   (:import
    [org.jline.keymap KeyMap]
    [org.jline.reader
@@ -27,7 +26,7 @@
    [org.jline.terminal.impl DumbTerminal]
    [java.io Writer]
    [org.jline.utils AttributedStringBuilder AttributedString AttributedStyle]
-   [rebel-readline.jline-api RebelLineReaderImpl]))
+   [rebel_readline.jline_api RebelLineReaderImpl]))
 
 (def ^:dynamic *terminal* nil)
 (def ^:dynamic ^LineReaderImpl *line-reader* nil)

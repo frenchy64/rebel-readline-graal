@@ -15,10 +15,12 @@
                  [org.jline/jline-terminal-jansi "3.24.1"]
                  [dev.weavejester/cljfmt "0.13.0"]
                  [compliment/compliment "0.6.0"]]
-  :aot [rebel-readline.line-reader-class]
+  :java-source-paths ["java"]
+  :aot [rebel-readline.main]
+  :main rebel-readline.main
   :profiles {:dev {:source-paths ["src" "dev"]
                    :main rebel-dev.main}
              :uberjar {:dependencies [[com.github.clj-easy/graal-build-time "1.0.5"]]
-                       :aot :all
+                       ;:aot :all #_[rebel-readline.main]
                        :uberjar-name "rebel-readline-standalone.jar"
-                       :main rebel-readline.main}})
+                       }})
