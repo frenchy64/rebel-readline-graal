@@ -13,6 +13,8 @@
     EndOfFileException]
    [java.io PushbackReader]))
 
+(set! *warn-on-reflection* true)
+
 (defmacro ensure-terminal
   "Bind the rebel-readline.jline-api/*terminal* var to a new Jline
   terminal if needed, otherwise use the currently bound one.

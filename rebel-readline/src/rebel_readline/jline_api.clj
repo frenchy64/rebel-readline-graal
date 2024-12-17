@@ -28,6 +28,8 @@
    [org.jline.utils AttributedStringBuilder AttributedString AttributedStyle]
    [rebel_readline.jline_api RebelLineReaderImpl]))
 
+(set! *warn-on-reflection* true)
+
 (def ^:dynamic *terminal* nil)
 (def ^:dynamic ^LineReaderImpl *line-reader* nil)
 (def ^:dynamic ^Buffer *buffer* nil)

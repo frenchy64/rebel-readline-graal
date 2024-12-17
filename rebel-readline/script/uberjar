@@ -1,2 +1,2 @@
-#!/bin/bash
-lein with-profile +uberjar uberjar
+#!/bin/sh
+clojure -T:build uber :native true

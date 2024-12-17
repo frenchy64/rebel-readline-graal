@@ -21,6 +21,6 @@
   :profiles {:dev {:source-paths ["src" "dev"]
                    :main rebel-dev.main}
              :uberjar {:dependencies [[com.github.clj-easy/graal-build-time "1.0.5"]]
-                       ;:aot :all #_[rebel-readline.main]
+                       :aot :all #_[rebel-readline.main]
                        :uberjar-name "rebel-readline-standalone.jar"
                        }})
