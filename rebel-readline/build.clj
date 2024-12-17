@@ -13,11 +13,11 @@
 (defn clean [_]
   (b/delete {:path "target"}))
 
-(defn compile-java [_]
-  (b/javac {:src-dirs java-dirs
-            :class-dir class-dir
-            :basis @basis
-            :javac-opts ["-source" "8" "-target" "8"]}))
+(defn compile-java [{:keys [native]}]
+  (b/javac (cond-> {:src-dirs java-dirs
+                    :class-dir class-dir
+                    :basis @basis}
+             (not native) (assoc :javac-opts ["-source" "8" "-target" "8"]))))
 
 (defn prep [_]
   (compile-java nil))
@@ -30,7 +30,7 @@
     (clean nil)
     (b/copy-dir {:src-dirs src-dirs
                  :target-dir class-dir})
-    (compile-java nil)
+    (compile-java {:native native})
     (b/compile-clj {:basis basis
                     :ns-compile [main-ns]
                     :class-dir class-dir})
