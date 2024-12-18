@@ -1,0 +1,12 @@
+[
+   {
+      "name":"clojure.lang.LineNumberingPushbackReader",
+      "methods":[
+         {
+            "name":"read",
+            "parameterTypes":[
+            ]
+         }
+      ]
+   }
+]
