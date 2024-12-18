@@ -8,10 +8,12 @@
    [clojure.repl :as repl]
    [clojure.main]))
 
-(defn- handle-sigint-form
+(set! *warn-on-reflection* true)
+
+(defn ^:internal handle-sigint-form
   []
-  `(let [thread# (Thread/currentThread)]
-     (repl/set-break-handler! (fn [_signal#] (.stop thread#)))))
+  (let [thread (Thread/currentThread)]
+    (repl/set-break-handler! (fn [_signal] (.stop thread)))))
 
 (defn syntax-highlight-prn
   "Print a syntax highlighted clojure value.
@@ -89,7 +91,7 @@
          clj-repl
          (-> {:print syntax-highlight-prn
               :eval (fn [form]
-                      (eval `(do ~(handle-sigint-form) ~form)))
+                      (eval `(do (handle-sigint-form) ~form)))
               :read (create-repl-read)}
              (merge opts {:prompt (fn [])})
              seq
