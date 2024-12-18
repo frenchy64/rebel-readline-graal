@@ -12,5 +12,6 @@
            'compliment.core))
 
 (defn -main [& args]
-  (require 'rebel-readline.clojure.main)
+  (locking clojure.lang.RT/REQUIRE_LOCK
+    (require 'rebel-readline.clojure.main))
   (apply (resolve 'rebel-readline.clojure.main/-main) args))

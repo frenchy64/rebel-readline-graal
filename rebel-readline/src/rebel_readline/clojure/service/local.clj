@@ -4,8 +4,6 @@
    [rebel-readline.clojure.utils :as clj-utils]
    [rebel-readline.tools :as tools]
    [rebel-readline.utils :as utils]
-   ;; lazy-load
-   [compliment.core :as compliment]
    [clojure.repl]))
 
 ;; taken from replicant

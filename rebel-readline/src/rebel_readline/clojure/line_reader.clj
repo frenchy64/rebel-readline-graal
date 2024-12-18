@@ -7,8 +7,6 @@
    [rebel-readline.clojure.sexp :as sexp]
    [rebel-readline.tools :as tools :refer [color service-dispatch]]
    [rebel-readline.utils :as utils :refer [log]]
-   ;; lazy-load
-   [cljfmt.core :refer [reformat-string]]
    [clojure.string :as string]
    [clojure.java.io :as io]
    [clojure.main])
