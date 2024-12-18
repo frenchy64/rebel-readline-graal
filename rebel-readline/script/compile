@@ -35,5 +35,4 @@ jar=${1:-target/rebel-readline-standalone.jar}
   --initialize-at-build-time=org.jline.utils.AttributedStyle \
   --features=clj_easy.graal_build_time.InitClojureClasses \
   -H:+PrintClassInitialization \
-  -O0 \
   -J-Xmx6g
