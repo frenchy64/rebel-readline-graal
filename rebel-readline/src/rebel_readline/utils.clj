@@ -34,17 +34,21 @@
             :else nil)))
       :dark))
 
-#_(defn require-resolve-var [var-sym]
-    (when (symbol? var-sym)
+(defn require-resolve-var [var-sym]
+  (when (symbol? var-sym)
+    (locking clojure.lang.RT/REQUIRE_LOCK
       (or (resolve var-sym)
           (when-let [ns (namespace var-sym)]
             (when (try (require (symbol ns)) true (catch Throwable t false))
-              (when-let [var (resolve var-sym)]
-                var))))))
+              (resolve var-sym)))))))
 
-#_(defn load-slow-deps! []
-    (.start
-     (Thread.
-      #(do
-         (require 'cljfmt.core)
-         (require 'compliment.core)))))
+(let [d (delay
+          (.start
+            (Thread.
+              #(do
+                 (locking clojure.lang.RT/REQUIRE_LOCK
+                   (require 'cljfmt.core))
+                 (locking clojure.lang.RT/REQUIRE_LOCK
+                   (require 'compliment.core)))))
+          nil)]
+  (defn load-slow-deps! [] @d))

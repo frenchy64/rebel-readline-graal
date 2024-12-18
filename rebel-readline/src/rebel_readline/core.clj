@@ -75,7 +75,7 @@
        :prompt (fn []))))"
   [line-reader & body]
   `(ensure-terminal
-    #_(rebel-readline.utils/load-slow-deps!)
+    (rebel-readline.utils/load-slow-deps!)
     (binding [rebel-readline.jline-api/*line-reader* ~line-reader]
       ~@body)))
 

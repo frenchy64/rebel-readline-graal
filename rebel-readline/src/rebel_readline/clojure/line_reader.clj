@@ -437,25 +437,26 @@
                (subs s sexp-start cursor)
                "\n1" (sexp/flip-delimiter-char (first delim))))))))
 
-(defn indent-amount [s cursor]
-  (if (zero? cursor)
-    0
-    (if-let [prx (indent-proxy-str s cursor)]
-      ;; lazy-load for faster start up
-      (let [reformat-string cljfmt.core/reformat-string #_(utils/require-resolve-var 'cljfmt.core/reformat-string)]
-        (try (->>
-              (reformat-string prx {:remove-trailing-whitespace? false
-                                    :insert-missing-whitespace? false
-                                    :remove-surrounding-whitespace? false
-                                    :remove-consecutive-blank-lines? false})
-              string/split-lines
-              last
-              sexp/count-leading-white-space)
-             (catch clojure.lang.ExceptionInfo e
-               (if (-> e ex-data :type (= :reader-exception))
-                 (+ 2 (sexp/count-leading-white-space prx))
-                 (throw e)))))
-      0)))
+(let [reformat-string (delay (utils/require-resolve-var 'cljfmt.core/reformat-string))]
+  (defn indent-amount [s cursor]
+    (if (zero? cursor)
+      0
+      (if-let [prx (indent-proxy-str s cursor)]
+        ;; lazy-load for faster start up
+        (let [reformat-string @reformat-string]
+          (try (->>
+                 (reformat-string prx {:remove-trailing-whitespace? false
+                                       :insert-missing-whitespace? false
+                                       :remove-surrounding-whitespace? false
+                                       :remove-consecutive-blank-lines? false})
+                 string/split-lines
+                 last
+                 sexp/count-leading-white-space)
+               (catch clojure.lang.ExceptionInfo e
+                 (if (-> e ex-data :type (= :reader-exception))
+                   (+ 2 (sexp/count-leading-white-space prx))
+                   (throw e)))))
+        0))))
 
 (def indent-line-widget
   (create-widget

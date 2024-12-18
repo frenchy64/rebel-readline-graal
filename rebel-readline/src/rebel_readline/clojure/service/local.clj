@@ -67,12 +67,13 @@
 (defmethod clj-reader/-resolve-meta ::service [_ var-str]
   (resolve-meta var-str))
 
-(defmethod clj-reader/-complete ::service [_ word options]
-  ;; lazy-load for faster startup
-  (when-let [completions compliment.core/completions #_(utils/require-resolve-var 'compliment.core/completions)]
-    (if options
-      (completions word options)
-      (completions word))))
+(let [completions (delay (utils/require-resolve-var 'compliment.core/completions))]
+  (defmethod clj-reader/-complete ::service [_ word options]
+    ;; lazy-load for faster startup
+    (when-let [completions @completions]
+      (if options
+        (completions word options)
+        (completions word)))))
 
 (defmethod clj-reader/-current-ns ::service [_]
   (some-> *ns* str))
@@ -84,14 +85,15 @@
 (defmethod clj-reader/-apropos ::service [_ var-str]
   (clojure.repl/apropos var-str))
 
-(defmethod clj-reader/-doc ::service [self var-str]
-  (when-let [{:keys [ns name]} (clj-reader/-resolve-meta self var-str)]
-    ;; lazy-load for faster startup
-    (when-let [documentation compliment.core/documentation #_(utils/require-resolve-var 'compliment.core/documentation)]
-      (when-let [doc (documentation var-str)]
-        (let [url (clj-utils/url-for (str ns) (str name))]
-          (cond-> {:doc doc}
-            url (assoc :url url)))))))
+(let [documentation (delay (utils/require-resolve-var 'compliment.core/documentation))]
+  (defmethod clj-reader/-doc ::service [self var-str]
+    (when-let [{:keys [ns name]} (clj-reader/-resolve-meta self var-str)]
+      ;; lazy-load for faster startup
+      (when-let [documentation @documentation]
+        (when-let [doc (documentation var-str)]
+          (let [url (clj-utils/url-for (str ns) (str name))]
+            (cond-> {:doc doc}
+              url (assoc :url url))))))))
 
 (defmethod clj-reader/-eval ::service [self form]
   (let [res (call-with-timeout
