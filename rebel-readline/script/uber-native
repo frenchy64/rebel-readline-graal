@@ -1,2 +1,2 @@
 #!/bin/sh
-clojure -X:build uber :native true
+clojure -T:build uber :native true

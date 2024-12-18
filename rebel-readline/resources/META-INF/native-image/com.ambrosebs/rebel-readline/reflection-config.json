@@ -6,6 +6,12 @@
             "name":"read",
             "parameterTypes":[
             ]
+         },
+         {
+            "name":"unread",
+            "parameterTypes":[
+              "int"
+            ]
          }
       ]
    }

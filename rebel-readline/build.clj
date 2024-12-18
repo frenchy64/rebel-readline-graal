@@ -6,7 +6,7 @@
 (def class-dir "target/classes")
 (def version "0.1.5-SNAPSHOT")
 (def basis (delay (b/create-basis {:project "deps.edn"})))
-(def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
+(def uber-file (format "target/%s-standalone.jar" (name lib) version))
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
 (def main-ns 'rebel-readline.main)
 (def src-dirs ["src" "resources"])
